@@ -1,0 +1,52 @@
+package com.classroom.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Course class representing a subject taught in the online classroom.
+ * This would typically be a JPA Entity connected to a database table.
+ */
+public class Course {
+    private int id;
+    private String title;
+    private String description;
+    private User teacher; // Reference to the User who is the teacher of this course
+    private List<String> contentUrls; // URLs to video lectures, PPTs, documents
+
+    // Constructor
+    public Course(int id, String title, String description, User teacher) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.teacher = teacher;
+        this.contentUrls = new ArrayList<>();
+    }
+
+    // --- Getters ---
+    public int getId() { return id; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public User getTeacher() { return teacher; }
+    public List<String> getContentUrls() { return contentUrls; }
+
+    // --- Setters ---
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setTeacher(User teacher) { this.teacher = teacher; }
+
+    // --- Business Logic Helper ---
+    public void addContent(String url) {
+        this.contentUrls.add(url);
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+               "id=" + id +
+               ", title='" + title + '\'' +
+               ", teacher=" + teacher.getName() +
+               ", contentCount=" + contentUrls.size() +
+               '}';
+    }
+}
