@@ -1,0 +1,58 @@
+package com.classroom.model;
+
+/**
+ * User class representing a student or teacher in the online classroom.
+ * This would typically be a JPA Entity connected to a database table.
+ */
+public class User {
+    // Unique identifier for the user (simulated database ID)
+    private int id;
+    private String username;
+    private String passwordHash; // Store hashed passwords, not plain text!
+    private String name;
+    private String email;
+    // Role can be 'STUDENT' or 'TEACHER'
+    private String role;
+
+    // Constructor
+    public User(int id, String username, String passwordHash, String name, String email, String role) {
+        this.id = id;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
+
+    // --- Getters ---
+    public int getId() { return id; }
+    public String getUsername() { return username; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getRole() { return role; }
+
+    // --- Setters ---
+    public void setUsername(String username) { this.username = username; }
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+    public void setRole(String role) { this.role = role; }
+
+    /**
+     * Placeholder method to simulate password checking.
+     * In a real app, this would use a security library (like Spring Security).
+     */
+    public boolean checkPassword(String candidatePassword) {
+        // Placeholder: Compare candidatePassword with stored passwordHash
+        return this.passwordHash.equals(candidatePassword);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", role='" + role + '\'' +
+               ", email='" + email + '\'' +
+               '}';
+    }
+}
