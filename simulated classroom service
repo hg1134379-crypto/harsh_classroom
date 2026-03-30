@@ -1,0 +1,96 @@
+package com.classroom.service;
+
+import com.classroom.model.User;
+import com.classroom.model.Course;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Simulated Service Layer.
+ * In a real application, this layer would interact with a database (via JDBC or JPA/Hibernate)
+ * and contain the core business logic (e.g., validation, transaction management).
+ */
+public class ClassroomService {
+    // Simulated database storage (Maps act as in-memory tables)
+    private Map<String, User> userDb = new HashMap<>();
+    private Map<Integer, Course> courseDb = new HashMap<>();
+    private int nextCourseId = 1;
+
+    public ClassroomService() {
+        // Initialize with sample data
+        User teacher = new User(101, "prof_smith", "hash123", "Prof. Smith", "smith@edu.com", "TEACHER");
+        User student = new User(201, "john_doe", "hash456", "John Doe", "john@stu.com", "STUDENT");
+
+        userDb.put("prof_smith", teacher);
+        userDb.put("john_doe", student);
+
+        Course javaCourse = new Course(nextCourseId++, "Advanced Java Programming", "Learn Spring Boot and Web Development.", teacher);
+        javaCourse.addContent("http://video.com/lecture1_oop");
+        javaCourse.addContent("http://document.com/assignment1");
+        courseDb.put(javaCourse.getId(), javaCourse);
+    }
+
+    /**
+     * Authenticates a user based on username and password.
+     * @param username The user's login ID.
+     * @param password The raw password.
+     * @return The authenticated User object, or null if login fails.
+     */
+    public User login(String username, String password) {
+        User user = userDb.get(username);
+        if (user != null && user.checkPassword(password)) {
+            System.out.println("Login successful for: " + user.getName());
+            return user;
+        }
+        System.out.println("Login failed for: " + username);
+        return null;
+    }
+
+    /**
+     * Teacher creates a new course.
+     * @param title Title of the course.
+     * @param description Description of the course.
+     * @param teacher The User object representing the teacher.
+     * @return The newly created Course object.
+     * @throws IllegalArgumentException if user is not a teacher.
+     */
+    public Course createCourse(String title, String description, User teacher) {
+        if (!"TEACHER".equals(teacher.getRole())) {
+            throw new IllegalArgumentException("Only teachers can create courses.");
+        }
+        Course newCourse = new Course(nextCourseId++, title, description, teacher);
+        courseDb.put(newCourse.getId(), newCourse);
+        System.out.println("Course created: " + newCourse.getTitle());
+        return newCourse;
+    }
+
+    /**
+     * Gets all available courses in the system.
+     * @return A map of all courses.
+     */
+    public Map<Integer, Course> getAllCourses() {
+        return courseDb;
+    }
+
+    // --- Main method to demonstrate service functionality (for local testing) ---
+    public static void main(String[] args) {
+        ClassroomService service = new ClassroomService();
+
+        // 1. Attempt Login
+        User teacher = service.login("prof_smith", "hash123");
+        User student = service.login("john_doe", "hash456");
+        service.login("unknown_user", "wrong_pass");
+
+        System.out.println("\n--- Course Management ---");
+        if (teacher != null) {
+            // 2. Create a Course
+            Course dbCourse = service.createCourse("Database Systems", "SQL, NoSQL, and data modeling.", teacher);
+            
+            // 3. View Courses
+            System.out.println("\nAvailable Courses:");
+            for (Course c : service.getAllCourses().values()) {
+                System.out.println(" - " + c);
+            }
+        }
+    }
+}
